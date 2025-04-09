@@ -33,3 +33,4 @@ C:\Users\Fedyaev\Documents\MyGitHub\ByBitBot_AF\ByBitBot_AF\obj\Debug\net6.0\ref
 C:\Users\Fedyaev\Documents\MyGitHub\ByBitBot_AF\ByBitBot_AF\obj\Debug\net6.0\ByBitBot_AF.pdb
 C:\Users\Fedyaev\Documents\MyGitHub\ByBitBot_AF\ByBitBot_AF\obj\Debug\net6.0\ByBitBot_AF.genruntimeconfig.cache
 C:\Users\Fedyaev\Documents\MyGitHub\ByBitBot_AF\ByBitBot_AF\obj\Debug\net6.0\ref\ByBitBot_AF.dll
+C:\Users\Fedyaev\Documents\MyGitHub\ByBitBot_AF\ByBitBot_AF\obj\Debug\net6.0\ByBitBot_AF.sourcelink.json
