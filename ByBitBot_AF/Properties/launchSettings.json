@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ByBitBot_AF": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
