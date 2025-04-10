@@ -3,20 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\bybitbot_af.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
-      "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\bybitbot_af.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+      "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\meanreversionbot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\meanreversionbot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\telegrammbot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\telegrammbot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\meanreversionbot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\meanreversionbot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\getwalletdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,36 +22,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "Dockerfile",
-              "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\Dockerfile",
-              "RelativeDocumentMoniker": "ByBitBot_AF\\Dockerfile",
-              "ToolTip": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\Dockerfile",
-              "RelativeToolTip": "ByBitBot_AF\\Dockerfile",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-04-10T11:29:05.15Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "ByBitBot_AF",
-              "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\ByBitBot_AF.csproj",
-              "RelativeDocumentMoniker": "ByBitBot_AF\\ByBitBot_AF.csproj",
-              "ToolTip": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\ByBitBot_AF.csproj",
-              "RelativeToolTip": "ByBitBot_AF\\ByBitBot_AF.csproj",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-04-10T11:22:50.944Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "TelegrammBot.cs",
               "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\TelegrammBot.cs",
               "RelativeDocumentMoniker": "ByBitBot_AF\\TelegrammBot.cs",
@@ -72,20 +39,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "MeanReversionBot.cs",
               "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\MeanReversionBot.cs",
               "RelativeDocumentMoniker": "ByBitBot_AF\\MeanReversionBot.cs",
               "ToolTip": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\MeanReversionBot.cs",
               "RelativeToolTip": "ByBitBot_AF\\MeanReversionBot.cs",
-              "ViewState": "AgIAAHUAAAAAAAAAAAAuwIkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAACcAAAAAAAAAAAAowD0AAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-10T05:08:35.559Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "GetWalletData.cs",
               "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\GetWalletData.cs",
               "RelativeDocumentMoniker": "ByBitBot_AF\\GetWalletData.cs",
@@ -93,8 +60,7 @@
               "RelativeToolTip": "ByBitBot_AF\\GetWalletData.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAADUAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-10T05:25:48.441Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-10T05:25:48.441Z"
             }
           ]
         }

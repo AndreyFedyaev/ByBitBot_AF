@@ -58,8 +58,8 @@ namespace ByBitBot_AF
         private void ReadConfig()
         {
             //считать из конфигурации потом:
-            apiKey = "7ogJDgTTyskzzDRYYN";                              //ТВОЙ_API_KEY
-            apiSecret = "SOAOwWXnseX4KQq19WMIFBrYA9VB8iptfMO2";         //ТВОЙ_SECRET_KEY
+            apiKey = "---";                              //ТВОЙ_API_KEY
+            apiSecret = "---";         //ТВОЙ_SECRET_KEY
             coin = "SOL";
             currency = "USDT";
             string _candleInterval = "ThreeMinutes";
