@@ -12,6 +12,7 @@
     <PackageReference Include="Bybit.Net" Version="4.4.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Skender.Stock.Indicators" Version="2.6.1" />
+    <PackageReference Include="Telegram.Bot" Version="22.4.4" />
   </ItemGroup>
 
 </Project>

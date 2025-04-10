@@ -32,6 +32,7 @@ namespace ByBitBot_AF
         private readonly GetCoinData _getCoinData;
         private readonly GetWalletData _getWalletData;
         private readonly BybitRestClient _client;
+        private readonly TelegrammBot _telegrammBot;
         private decimal? lastBuyPrice { get; set; } = null;           //цена последней покупки
 
         //свойства монеты
@@ -51,13 +52,14 @@ namespace ByBitBot_AF
 
             _getCoinData = new GetCoinData(_client, symbol, candleInterval);
             _getWalletData = new GetWalletData(_client, coin);
+            _telegrammBot = new TelegrammBot();
         }
 
         private void ReadConfig()
         {
             //считать из конфигурации потом:
-            apiKey = "---";                              //ТВОЙ_API_KEY
-            apiSecret = "---";         //ТВОЙ_SECRET_KEY
+            apiKey = "7ogJDgTTyskzzDRYYN";                              //ТВОЙ_API_KEY
+            apiSecret = "SOAOwWXnseX4KQq19WMIFBrYA9VB8iptfMO2";         //ТВОЙ_SECRET_KEY
             coin = "SOL";
             currency = "USDT";
             string _candleInterval = "ThreeMinutes";
@@ -128,9 +130,6 @@ namespace ByBitBot_AF
                     emaFast = emaFastResult;
                     emaSlow = emaSlowResult;
 
-
-
-
                     string status = "";
                     string status2 = "";
                     if (lastBuyPrice == null)
@@ -147,7 +146,6 @@ namespace ByBitBot_AF
                         if (lastBuyPrice > lastPrice) w = ">"; else w = "<";
                         status2 = $" {priceChange}% | Цена покупки:{lastBuyPrice} {w}";
                     }
-
          
                     string w1 = "";
                     if (lastPrice > emaFast) w1 = ">"; else w1 = "<";
@@ -158,6 +156,7 @@ namespace ByBitBot_AF
 
                     Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | {status} |{status2} Цена:{lastPrice:F2} {w1} EMA{emaFastLength}:{emaFast:F2} {w2} EMA{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
 
+                    //_telegrammBot.TgBotSendMessage($"Цена:{lastPrice:F2}");   //для проверки
 
                     if (lastBuyPrice == null)
                     {

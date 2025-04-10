@@ -441,6 +441,26 @@
         "runtime": {
           "lib/netcoreapp2.1/_._": {}
         }
+      },
+      "Telegram.Bot/22.4.4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
+          "System.Text.Json": "8.0.5"
+        },
+        "compile": {
+          "lib/net6.0/Telegram.Bot.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Telegram.Bot.dll": {
+            "related": ".pdb;.xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
       }
     }
   },
@@ -1367,13 +1387,33 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "Telegram.Bot/22.4.4": {
+      "sha512": "LnSX4GMA3p4XZY6xsBZ9zQGyMYUW3htTcBNI19g8ISMM4/BWz7zLFXrrZ6nfE/vI9FB8RvdDrfqiaoB6911qmA==",
+      "type": "package",
+      "path": "telegram.bot/22.4.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net6.0/Telegram.Bot.dll",
+        "lib/net6.0/Telegram.Bot.pdb",
+        "lib/net6.0/Telegram.Bot.xml",
+        "lib/netstandard2.0/Telegram.Bot.dll",
+        "lib/netstandard2.0/Telegram.Bot.pdb",
+        "lib/netstandard2.0/Telegram.Bot.xml",
+        "package-icon.png",
+        "telegram.bot.22.4.4.nupkg.sha512",
+        "telegram.bot.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
       "Bybit.Net >= 4.4.1",
       "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.21.0",
-      "Skender.Stock.Indicators >= 2.6.1"
+      "Skender.Stock.Indicators >= 2.6.1",
+      "Telegram.Bot >= 22.4.4"
     ]
   },
   "packageFolders": {
@@ -1438,6 +1478,10 @@
           "Skender.Stock.Indicators": {
             "target": "Package",
             "version": "[2.6.1, )"
+          },
+          "Telegram.Bot": {
+            "target": "Package",
+            "version": "[22.4.4, )"
           }
         },
         "imports": [
