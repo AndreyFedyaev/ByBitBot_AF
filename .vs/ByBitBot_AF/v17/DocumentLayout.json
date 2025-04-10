@@ -3,8 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\meanreversionbot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\meanreversionbot.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\getcoindata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\getcoindata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|c:\\users\\fedyaev\\documents\\mygithub\\bybitbot_af\\bybitbot_af\\getwalletdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B7DF8771-1CA0-4872-9975-CD92D0FA98FB}|ByBitBot_AF\\ByBitBot_AF.csproj|solutionrelative:bybitbot_af\\getwalletdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,12 +31,50 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "MeanReversionBot.cs",
+              "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\MeanReversionBot.cs",
+              "RelativeDocumentMoniker": "ByBitBot_AF\\MeanReversionBot.cs",
+              "ToolTip": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\MeanReversionBot.cs",
+              "RelativeToolTip": "ByBitBot_AF\\MeanReversionBot.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAQwDsAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T05:08:35.559Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "GetWalletData.cs",
+              "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\GetWalletData.cs",
+              "RelativeDocumentMoniker": "ByBitBot_AF\\GetWalletData.cs",
+              "ToolTip": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\GetWalletData.cs",
+              "RelativeToolTip": "ByBitBot_AF\\GetWalletData.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAA5wBMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T05:25:48.441Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "GetCoinData.cs",
+              "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\GetCoinData.cs",
+              "RelativeDocumentMoniker": "ByBitBot_AF\\GetCoinData.cs",
+              "ToolTip": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\GetCoinData.cs",
+              "RelativeToolTip": "ByBitBot_AF\\GetCoinData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-10T05:05:36.92Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\Program.cs",
               "RelativeDocumentMoniker": "ByBitBot_AF\\Program.cs",
               "ToolTip": "C:\\Users\\Fedyaev\\Documents\\MyGitHub\\ByBitBot_AF\\ByBitBot_AF\\Program.cs",
               "RelativeToolTip": "ByBitBot_AF\\Program.cs",
-              "ViewState": "AgIAALAAAAAAAAAAAADwv+EAAACdAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-09T03:46:52.627Z",
               "EditorCaption": ""
