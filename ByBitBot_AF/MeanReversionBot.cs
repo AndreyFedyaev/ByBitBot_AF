@@ -130,33 +130,27 @@ namespace ByBitBot_AF
                     emaFast = emaFastResult;
                     emaSlow = emaSlowResult;
 
-                    string status = "";
-                    string status2 = "";
+                    string w1 = "";
+                    if (lastPrice > emaFast) w1 = ">"; else w1 = "<";
+                    string w2 = "";
+                    if (emaFast > emaSlow) w2 = ">"; else w2 = "<";
+                    
                     if (lastBuyPrice == null)
                     {
-                        status = "Ожидание покупки..";
-                        status2 = "";
+                        Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание покупки.. | Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
+
+                        _telegrammBot.lastLoggingMessage = $"{DateTime.Now:T}\n{symbol}\nОжидание покупки..\nЦена:{lastPrice:F2}\nema{emaFastLength}:{emaFast:F2}\nema{emaSlowLength}:{emaSlow:F2}";
                     }
                     else
                     {
-                        status = "Ожидание продажи..";
-
                         decimal priceChange = ((decimal)lastPrice * 100 / (decimal)lastBuyPrice) - 100;
-                        string w = "";
-                        if (lastBuyPrice > lastPrice) w = ">"; else w = "<";
-                        status2 = $" {priceChange}% | Цена покупки:{lastBuyPrice} {w}";
+                        string w3 = "";
+                        if (lastBuyPrice > lastPrice) w3 = ">"; else w3 = "<";
+
+                        Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание продажи.. | {priceChange}% | Цена покупки:{lastBuyPrice} {w3} Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
+
+                        _telegrammBot.lastLoggingMessage = $"{DateTime.Now:T}\n{symbol}\nОжидание продажи..\nИзменение цены:{priceChange}%\nЦена покупки:{lastBuyPrice}\nЦена:{lastPrice:F2}\nema{emaFastLength}:{emaFast:F2}\nema{emaSlowLength}:{emaSlow:F2}";
                     }
-         
-                    string w1 = "";
-                    if (lastPrice > emaFast) w1 = ">"; else w1 = "<";
-
-                    string w2 = "";
-                    if (emaFast > emaSlow) w2 = ">"; else w2 = "<";
-
-
-                    Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | {status} |{status2} Цена:{lastPrice:F2} {w1} EMA{emaFastLength}:{emaFast:F2} {w2} EMA{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
-
-                    //_telegrammBot.TgBotSendMessage($"Цена:{lastPrice:F2}");   //для проверки
 
                     if (lastBuyPrice == null)
                     {
@@ -217,10 +211,12 @@ namespace ByBitBot_AF
                 if (result.Success)
                 {
                     Console.WriteLine($"[{DateTime.Now:T}] | Покупка {symbol} на сумму: {usdtBalance} USDT");
+                    _telegrammBot.TgBotSendMessage($"Покупка {symbol} на сумму: {usdtBalance} USDT");
                 }
                 else
                 {
                     Console.WriteLine($"Ошибка ордера: {result.Error}");
+                    _telegrammBot.TgBotSendMessage($"Ошибка ордера: {result.Error}");
                 }
             }
             catch(Exception ex)
@@ -263,10 +259,12 @@ namespace ByBitBot_AF
                 if (result.Success)
                 {
                     Console.WriteLine($"[{DateTime.Now:T}] | Продажа {symbol}: {quantityToSell}");
+                    _telegrammBot.TgBotSendMessage($"Продажа {symbol}: {quantityToSell}");
                 }
                 else
                 {
                     Console.WriteLine($"Ошибка ордера: {result.Error}");
+                    _telegrammBot.TgBotSendMessage($"Ошибка ордера: {result.Error}");
                 }
             }
             catch (Exception ex)

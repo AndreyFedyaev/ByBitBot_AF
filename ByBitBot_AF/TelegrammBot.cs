@@ -7,6 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot.Types;
+using System.Threading;
 
 namespace ByBitBot_AF
 {
@@ -15,6 +16,7 @@ namespace ByBitBot_AF
         private readonly TelegramBotClient bot;
         private readonly string token = "7766788849:AAEpUNuaAdkLWEbRd__8jvgrj66FA9P1dPg";
         private ChatId chatId = 0;
+        public string lastLoggingMessage { get; set; }
 
         public TelegrammBot()
         {
@@ -33,27 +35,41 @@ namespace ByBitBot_AF
         }
         private async Task OnMessage(Message msg, UpdateType type)
         {
-            if (msg.Text == "GO")
+            if (msg == null || msg.Text == null) return;
+
+            if (msg.Text.ToUpper() == "GO")
             {
                 chatId = msg.Chat.Id;
 
-                await bot.SendMessage(chatId, "chatId успешно считан!");
+                var replyKeyboard = new ReplyKeyboardMarkup(new[]
+                {
+                    new KeyboardButton[] { "Статус", "Баланс", "Тест" }
+                })
+                {
+                    ResizeKeyboard = true // уменьшает размер под экран
+                };
+
+                await bot.SendMessage(
+                    chatId: chatId,
+                    text: "chatId успешно считан!",
+                    replyMarkup: replyKeyboard
+                );
             }
 
-            if (msg.Text == "11")
+            if (msg.Text == "Статус")
             {
-                //await bot.SendMessage(msg.Chat, "Welcome! Pick one direction",
-                //    replyMarkup: new InlineKeyboardButton[] { "Left", "Right" });
+       
             }
-            if (msg.Text == "12")
+            if (msg.Text == "Баланс")
             {
-                //await bot.SendMessage(msg.Chat, "Welcome! Pick one direction",
-                //    replyMarkup: new InlineKeyboardButton[] { "Left", "Right" });
+
             }
-            if (msg.Text == "13")
+            if (msg.Text == "Тест")
             {
-                //await bot.SendMessage(msg.Chat, "Welcome! Pick one direction",
-                //    replyMarkup: new InlineKeyboardButton[] { "Left", "Right" });
+                if (chatId != 0)
+                {
+                    await bot.SendMessage(chatId, lastLoggingMessage);
+                }
             }
         }
 
