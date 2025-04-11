@@ -13,14 +13,16 @@ namespace ByBitBot_AF
 {
     class TelegrammBot
     {
+        //параметры из строки запуска контейнера Docker:
+        private string docker_telegrammToken = Environment.GetEnvironmentVariable("telegrammtoken") ?? "";
+
         private readonly TelegramBotClient bot;
-        private readonly string token = "7766788849:AAEpUNuaAdkLWEbRd__8jvgrj66FA9P1dPg";
         private ChatId chatId = 0;
         public string lastLoggingMessage { get; set; }
 
         public TelegrammBot()
         {
-            bot = new TelegramBotClient(token);
+            bot = new TelegramBotClient(docker_telegrammToken);
 
             Start();
         }

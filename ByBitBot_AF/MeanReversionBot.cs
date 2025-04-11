@@ -12,21 +12,33 @@ using Skender.Stock.Indicators;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using ByBitBot_AF;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace ByBitBot_AF
 {
     public class MeanReversionBot
     {
+        //параметры из строки запуска контейнера Docker:
+        private string docker_apiKey = Environment.GetEnvironmentVariable("apikey") ?? "";
+        private string docker_apiSecret = Environment.GetEnvironmentVariable("apisecret") ?? "";
+        private string docker_coin = Environment.GetEnvironmentVariable("coin") ?? "";
+        private string docker_currency = Environment.GetEnvironmentVariable("currency") ?? "";
+        private string docker_emaFastLength = Environment.GetEnvironmentVariable("emafastlength") ?? "";
+        private string docker_emaSlowLength = Environment.GetEnvironmentVariable("emaslowlength") ?? "";
+        private string docker_candleInterval = Environment.GetEnvironmentVariable("candleInterval") ?? "";
+        private string docker_cycle = Environment.GetEnvironmentVariable("cycle") ?? "";
+
         //параметры из конфигурации:     
-        private string apiKey = "";                 //ключ API KEY из ByBIT
-        private string apiSecret = "";              //ключ API SECRET из ByBIT
-        private string coin = "";
-        private string currency = "";
-        private string symbol = "";          //торговая пара
-        private int emaFastLength = 20;             //длина экспоненциальной скользящей средней на короткий период
-        private int emaSlowLength = 50;             //длина экспоненциальной скользящей средней на длинный период
-        private KlineInterval candleInterval;         //интервал свечей
-        private TimeSpan cycle = TimeSpan.FromSeconds(10);                      //таймер работы
+        private string apiKey;                                  //ключ API KEY из ByBIT
+        private string apiSecret;                               //ключ API SECRET из ByBIT
+        private string coin;                                    //монета
+        private string currency;                                //валюта
+        private string symbol;                                  //торговая пара
+        private int emaFastLength;                              //длина экспоненциальной скользящей средней на короткий период
+        private int emaSlowLength;                              //длина экспоненциальной скользящей средней на длинный период
+        private KlineInterval candleInterval;                   //интервал свечей
+        private TimeSpan cycle;                                 //таймер работы (цикл работы)
 
         //свойства
         private readonly GetCoinData _getCoinData;
@@ -57,14 +69,18 @@ namespace ByBitBot_AF
 
         private void ReadConfig()
         {
-            //считать из конфигурации потом:
-            apiKey = "---";                              //ТВОЙ_API_KEY
-            apiSecret = "---";         //ТВОЙ_SECRET_KEY
-            coin = "SOL";
-            currency = "USDT";
-            string _candleInterval = "ThreeMinutes";
+            apiKey = docker_apiKey;
+            apiSecret = docker_apiSecret;
+
+            coin = docker_coin;
+            currency = docker_currency;
 
             symbol = coin + currency;
+
+            emaFastLength = Convert.ToInt32(docker_emaFastLength);
+            emaSlowLength = Convert.ToInt32(docker_emaSlowLength);
+
+            string _candleInterval = docker_candleInterval;
             switch (_candleInterval)
             {
                 case "OneMinute":
@@ -110,6 +126,8 @@ namespace ByBitBot_AF
                     candleInterval = KlineInterval.OneMinute;
                     break;
             }
+
+            cycle = TimeSpan.FromSeconds(Convert.ToInt32(docker_cycle));
         }
 
         public async Task StartLoopAsync()
@@ -147,9 +165,9 @@ namespace ByBitBot_AF
                         string w3 = "";
                         if (lastBuyPrice > lastPrice) w3 = ">"; else w3 = "<";
 
-                        Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание продажи.. | {priceChange}% | Цена покупки:{lastBuyPrice} {w3} Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
+                        Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание продажи.. | {priceChange:F2}% | Цена покупки:{lastBuyPrice} {w3} Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
 
-                        _telegrammBot.lastLoggingMessage = $"{DateTime.Now:T}\n{symbol}\nОжидание продажи..\nИзменение цены:{priceChange}%\nЦена покупки:{lastBuyPrice}\nЦена:{lastPrice:F2}\nema{emaFastLength}:{emaFast:F2}\nema{emaSlowLength}:{emaSlow:F2}";
+                        _telegrammBot.lastLoggingMessage = $"{DateTime.Now:T}\n{symbol}\nОжидание продажи..\nИзменение цены:{priceChange:F2}%\nЦена покупки:{lastBuyPrice}\nЦена:{lastPrice:F2}\nema{emaFastLength}:{emaFast:F2}\nema{emaSlowLength}:{emaSlow:F2}";
                     }
 
                     if (lastBuyPrice == null)
@@ -212,6 +230,8 @@ namespace ByBitBot_AF
                 {
                     Console.WriteLine($"[{DateTime.Now:T}] | Покупка {symbol} на сумму: {usdtBalance} USDT");
                     _telegrammBot.TgBotSendMessage($"Покупка {symbol} на сумму: {usdtBalance} USDT");
+
+                    lastBuyPrice = lastPrice;
                 }
                 else
                 {
@@ -260,6 +280,8 @@ namespace ByBitBot_AF
                 {
                     Console.WriteLine($"[{DateTime.Now:T}] | Продажа {symbol}: {quantityToSell}");
                     _telegrammBot.TgBotSendMessage($"Продажа {symbol}: {quantityToSell}");
+
+                    lastBuyPrice = null;
                 }
                 else
                 {
