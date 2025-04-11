@@ -1,19 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Bybit.Net.Clients;
-using Bybit.Net.Objects;
-using Bybit.Net.Objects.Models.V5;
+﻿using Bybit.Net.Clients;
 using CryptoExchange.Net.Authentication;
-using CryptoExchange.Net.Interfaces;
-using System.Linq;
-using System.Threading;
 using Bybit.Net.Enums;
-using Skender.Stock.Indicators;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using ByBitBot_AF;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.DataProtection;
 
 namespace ByBitBot_AF
 {
@@ -139,6 +126,7 @@ namespace ByBitBot_AF
                 try
                 {
                     await _getWalletData.UpdateWalletData();
+                    _telegrammBot.lastBalanceInfo = $"{coin}:  {_getWalletData.AssetBalance:F5}\n{currency}:  {_getWalletData.TotalAvailableBalance:F3}\nWallet:  {_getWalletData.TotalEquity:F3}";
 
                     //определяем есть ли активные покупки
                     var searchBuy = await _client.V5Api.Trading.GetUserTradesAsync(
@@ -169,9 +157,9 @@ namespace ByBitBot_AF
                     
                     if (lastBuyPrice == null)
                     {
-                        Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание покупки.. | Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
+                        Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание покупки.. | Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | {currency}:{_getWalletData.TotalAvailableBalance:F3}, {coin}:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
 
-                        _telegrammBot.lastLoggingMessage = $"{DateTime.Now:T}\n{symbol}\nОжидание покупки..\nЦена:{lastPrice:F2}\nema{emaFastLength}:{emaFast:F2}\nema{emaSlowLength}:{emaSlow:F2}";
+                        _telegrammBot.lastLoggingMessage = $"[{DateTime.Now:T}]\n{coin}/{currency}: ожидание покупки..\nЦена: {lastPrice:F3}\nEma{emaFastLength}: {emaFast:F3}\nEma{emaSlowLength}: {emaSlow:F3}";
                     }
                     else
                     {
@@ -181,7 +169,7 @@ namespace ByBitBot_AF
 
                         Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание продажи.. | {priceChange:F2}% | Цена покупки:{lastBuyPrice} {w3} Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
 
-                        _telegrammBot.lastLoggingMessage = $"{DateTime.Now:T}\n{symbol}\nОжидание продажи..\nИзменение цены:{priceChange:F2}%\nЦена покупки:{lastBuyPrice}\nЦена:{lastPrice:F2}\nema{emaFastLength}:{emaFast:F2}\nema{emaSlowLength}:{emaSlow:F2}";
+                        _telegrammBot.lastLoggingMessage = $"[{DateTime.Now:T}]\n{coin}/{currency}: ожидание продажи..\nИзменение цены: {priceChange:F2}%\nЦена покупки: {lastBuyPrice:F3}\nЦена: {lastPrice:F3}\nEma{emaFastLength}: {emaFast:F3}\nEma{emaSlowLength}: {emaSlow:F3}";
                     }
 
                     if (lastBuyPrice == null)
@@ -209,12 +197,6 @@ namespace ByBitBot_AF
             }
         }
 
-       
-
-
-
-
-
         /// <summary>
         /// Покупка
         /// </summary>
@@ -236,14 +218,17 @@ namespace ByBitBot_AF
                         symbol,                                                 // Пара
                         Bybit.Net.Enums.OrderSide.Buy,                          // Сторона сделки
                         Bybit.Net.Enums.NewOrderType.Market,                    // Тип ордера: рыночный
-                        usdtBalance,                                                   // Кол-во
+                        usdtBalance,                                            // Кол-во
                         marketUnit: MarketUnit.QuoteAsset
                         );
 
                 if (result.Success)
                 {
-                    Console.WriteLine($"[{DateTime.Now:T}] | Покупка {symbol} на сумму: {usdtBalance} USDT");
-                    _telegrammBot.TgBotSendMessage($"Покупка {symbol} на сумму: {usdtBalance} USDT");
+                    string message = $"[{DateTime.Now:T}] | Покупка {coin} на сумму: {usdtBalance} USDT | Цена: {lastPrice}";
+
+                    Console.WriteLine(message);
+                    _telegrammBot.TgBotSendMessage(message);
+                    _telegrammBot.BuySellArchive.Add(message);
 
                     lastBuyPrice = lastPrice;
                 }
@@ -292,8 +277,11 @@ namespace ByBitBot_AF
 
                 if (result.Success)
                 {
-                    Console.WriteLine($"[{DateTime.Now:T}] | Продажа {symbol}: {quantityToSell}");
-                    _telegrammBot.TgBotSendMessage($"Продажа {symbol}: {quantityToSell}");
+                    string message = $"[{DateTime.Now:T}] | Продажа {coin}: {quantityToSell} | Цена: {lastPrice}";
+
+                    Console.WriteLine(message);
+                    _telegrammBot.TgBotSendMessage(message);
+                    _telegrammBot.BuySellArchive.Add(message);
 
                     lastBuyPrice = null;
                 }

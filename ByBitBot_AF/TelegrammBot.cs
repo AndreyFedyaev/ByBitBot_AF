@@ -19,6 +19,8 @@ namespace ByBitBot_AF
         private readonly TelegramBotClient bot;
         private ChatId chatId = 0;
         public string lastLoggingMessage { get; set; }
+        public string lastBalanceInfo { get; set; }
+        public List<string> BuySellArchive { get; set; } = new List<string>();
 
         public TelegrammBot()
         {
@@ -48,7 +50,7 @@ namespace ByBitBot_AF
 
                 var replyKeyboard = new ReplyKeyboardMarkup(new[]
                 {
-                    new KeyboardButton[] { "Статус", "Баланс", "Тест" }
+                    new KeyboardButton[] { "История", "Баланс", "Лог" }
                 })
                 {
                     ResizeKeyboard = true // уменьшает размер под экран
@@ -61,15 +63,26 @@ namespace ByBitBot_AF
                 );
             }
 
-            if (msg.Text == "Статус")
+            if (msg.Text == "История")
             {
-       
+                if (chatId != 0)
+                {
+                    string archiveresult = "История:";
+                    foreach (var item in BuySellArchive)
+                    {
+                        archiveresult = archiveresult + "\n" + item;
+                    }
+                    await bot.SendMessage(chatId, archiveresult);
+                }
             }
             if (msg.Text == "Баланс")
             {
-
+                if (chatId != 0)
+                {
+                    await bot.SendMessage(chatId, lastBalanceInfo);
+                }
             }
-            if (msg.Text == "Тест")
+            if (msg.Text == "Лог")
             {
                 if (chatId != 0)
                 {
