@@ -140,6 +140,20 @@ namespace ByBitBot_AF
                 {
                     await _getWalletData.UpdateWalletData();
 
+                    //определяем есть ли активные покупки
+                    var searchBuy = await _client.V5Api.Trading.GetUserTradesAsync(
+                        category: Category.Spot,
+                        symbol: symbol,
+                        limit: 1);
+                    if (searchBuy != null && searchBuy.Success)
+                    {
+                        var trade = searchBuy.Data.List.FirstOrDefault();
+                        if (trade != null && trade.FeeAsset == coin && trade.Side == OrderSide.Buy)
+                        {
+                            lastBuyPrice = trade.Price;
+                        }
+                    }
+
                     //получение текущей цены SOL/USDT
                     lastPrice = await _getCoinData.GetCurrentPriceAsync(symbol);
 

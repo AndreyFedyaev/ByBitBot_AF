@@ -22,9 +22,12 @@ namespace ByBitBot_AF
 
         public TelegrammBot()
         {
-            bot = new TelegramBotClient(docker_telegrammToken);
+            if (docker_telegrammToken.Trim() != "")
+            {
+                bot = new TelegramBotClient(docker_telegrammToken);
 
-            Start();
+                Start();
+            }
         }
 
         private async void Start()
