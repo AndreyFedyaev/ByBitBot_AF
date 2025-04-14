@@ -197,6 +197,61 @@ namespace ByBitBot_AF
             }
         }
 
+
+
+        /// <summary>
+        /// Анализ условий для входа
+        /// </summary>
+        /// <returns>true - можно покупать!</returns>
+        private bool AnalyzeEntry()
+        {
+            bool result = false;
+
+
+
+            return result;
+        }
+
+        /// <summary>
+        /// Анализ условий для выхода
+        /// </summary>
+        /// <returns>true - можно продавать!</returns>
+        private bool AnalyzeExit()
+        {
+            bool result = false;
+
+
+
+            return result;
+        }
+
+        /// <summary>
+        /// Определение суммы покупки
+        /// </summary>
+        /// <returns>величина покупки (decimal)</returns>
+        private decimal CalculateBuyAmount()
+        {
+            decimal result = 0;
+
+
+
+            return result;
+        }
+
+        /// <summary>
+        /// Определение суммы продажи
+        /// </summary>
+        /// <returns>величина продажи (decimal)</returns>
+        private decimal CalculateSellAmount()
+        {
+            decimal result = 0;
+
+
+
+            return result;
+        }
+
+
         /// <summary>
         /// Покупка
         /// </summary>
