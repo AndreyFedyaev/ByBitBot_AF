@@ -172,20 +172,42 @@ namespace ByBitBot_AF
                         _telegrammBot.lastLoggingMessage = $"[{DateTime.Now:T}]\n{coin}/{currency}: ожидание продажи..\nИзменение цены: {priceChange:F2}%\nЦена покупки: {lastBuyPrice:F3}\nЦена: {lastPrice:F3}\nEma{emaFastLength}: {emaFast:F3}\nEma{emaSlowLength}: {emaSlow:F3}";
                     }
 
-                    if (lastBuyPrice == null)
+
+                    //проверка условий для входа
+                    var buy = AnalyzeBuy();
+                    if (buy)
                     {
-                        if (lastPrice > emaFast && emaFast > emaSlow)
+                        if (lastBuyPrice == null)
                         {
-                            await Buy();
+
                         }
                     }
-                    else
+
+                    //проверка условий для выхода
+                    var sell = AnalyzeSell();
+                    if (sell)
                     {
-                        if (lastBuyPrice < lastPrice && lastPrice < emaFast && emaFast < emaSlow)
+                        if (lastBuyPrice != null)
                         {
-                            await Sell();
+
                         }
                     }
+
+
+                    //if (lastBuyPrice == null)
+                    //{
+                    //    if (lastPrice > emaFast && emaFast > emaSlow)
+                    //    {
+                    //        await Buy();
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (lastBuyPrice < lastPrice && lastPrice < emaFast && emaFast < emaSlow)
+                    //    {
+                    //        await Sell();
+                    //    }
+                    //}
 
                     await Task.Delay(cycle);
                 }
@@ -200,27 +222,27 @@ namespace ByBitBot_AF
 
 
         /// <summary>
-        /// Анализ условий для входа
+        /// Анализ условий для покупки
         /// </summary>
         /// <returns>true - можно покупать!</returns>
-        private bool AnalyzeEntry()
+        private bool AnalyzeBuy()
         {
             bool result = false;
 
-
+            if (lastPrice > emaFast && emaFast > emaSlow) result = true;
 
             return result;
         }
 
         /// <summary>
-        /// Анализ условий для выхода
+        /// Анализ условий для продажи
         /// </summary>
         /// <returns>true - можно продавать!</returns>
-        private bool AnalyzeExit()
+        private bool AnalyzeSell()
         {
             bool result = false;
 
-
+            if (lastBuyPrice < lastPrice && lastPrice < emaFast && emaFast < emaSlow) result = true;
 
             return result;
         }
