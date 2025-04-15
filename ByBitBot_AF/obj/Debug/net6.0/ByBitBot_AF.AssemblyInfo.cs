@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ByBitBot_AF")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c42ba74043b2b047258cc41f16fd8a074663cbc4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e9f1cc3663652e501ecd6db2cadde12f70eb3781")]
 [assembly: System.Reflection.AssemblyProductAttribute("ByBitBot_AF")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ByBitBot_AF")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

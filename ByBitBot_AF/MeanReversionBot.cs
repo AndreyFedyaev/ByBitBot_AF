@@ -173,41 +173,30 @@ namespace ByBitBot_AF
                     }
 
 
-                    //проверка условий для входа
+                    //проверка условий для покупки
                     var buy = AnalyzeBuy();
                     if (buy)
                     {
-                        if (lastBuyPrice == null)
+                        if (lastBuyPrice == null) //если покупок еще небыло
                         {
+                            var buyAmount = CalculateBuyAmountUSDT();
 
+                            await Buy(symbol, buyAmount, MarketUnit.QuoteAsset);
                         }
                     }
 
-                    //проверка условий для выхода
+                    //проверка условий для продажи
                     var sell = AnalyzeSell();
                     if (sell)
                     {
+                        //можно продавать
                         if (lastBuyPrice != null)
                         {
+                            //если есть покупки для продажи
 
                         }
                     }
 
-
-                    //if (lastBuyPrice == null)
-                    //{
-                    //    if (lastPrice > emaFast && emaFast > emaSlow)
-                    //    {
-                    //        await Buy();
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    if (lastBuyPrice < lastPrice && lastPrice < emaFast && emaFast < emaSlow)
-                    //    {
-                    //        await Sell();
-                    //    }
-                    //}
 
                     await Task.Delay(cycle);
                 }
@@ -248,14 +237,26 @@ namespace ByBitBot_AF
         }
 
         /// <summary>
-        /// Определение суммы покупки
+        /// Определение суммы покупки в USDT
         /// </summary>
         /// <returns>величина покупки (decimal)</returns>
-        private decimal CalculateBuyAmount()
+        private decimal CalculateBuyAmountUSDT()
         {
             decimal result = 0;
 
+            if (_getWalletData != null && _getWalletData.TotalAvailableBalance != null)
+            {
+                var amount = Math.Round((decimal)_getWalletData.TotalAvailableBalance * 0.98m, 2);     // 98% от всех доступных средств
+                var minOrderValue = _getWalletData.MinOrderBuyValue;    //минимальная сумма покупки для текущей валюты
 
+                if (amount < minOrderValue)
+                {
+                    Console.WriteLine($"[{DateTime.Now:T}] | Недостаточно USDT: {amount:F3} (нужно хотя бы {minOrderValue} USDT)");
+                    result = 0;
+                }
+
+                result = amount;
+            }
 
             return result;
         }
@@ -273,30 +274,23 @@ namespace ByBitBot_AF
             return result;
         }
 
-
         /// <summary>
         /// Покупка
         /// </summary>
-        private async Task Buy()
+        /// <param name="bBymbol">торговая пара</param>
+        /// <param name="bAmount">величина покупки</param>
+        /// <param name="bMarketUnit">единица измерения для рыночного ордера (например для BTCUSDT: "MarketUnit.BaseAsset" - в BTC, "MarketUnit.QuoteAsset" - в USDT)</param>
+        private async Task Buy(string bBymbol, decimal bAmount, MarketUnit bMarketUnit)
         {
             try
             {
-                var usdtBalance = Math.Round(((decimal)_getWalletData.TotalAvailableBalance * 0.98m), 2);     // 98% от всех доступных средств
-                var minOrderValue = _getWalletData.MinOrderBuyValue;
-
-                if (usdtBalance < minOrderValue)
-                {
-                    Console.WriteLine($"[{DateTime.Now:T}] | Недостаточно USDT: {usdtBalance:F3} (нужно хотя бы {minOrderValue} USDT)");
-                    return;
-                }              
-
                 var result = await _client.V5Api.Trading.PlaceOrderAsync(
                         Bybit.Net.Enums.Category.Spot,                          // Спотовая торговля
-                        symbol,                                                 // Пара
+                        bBymbol,                                                // Пара
                         Bybit.Net.Enums.OrderSide.Buy,                          // Сторона сделки
                         Bybit.Net.Enums.NewOrderType.Market,                    // Тип ордера: рыночный
-                        usdtBalance,                                            // Кол-во
-                        marketUnit: MarketUnit.QuoteAsset
+                        bAmount,                                                // Кол-во
+                        marketUnit: bMarketUnit
                         );
 
                 if (result.Success)
