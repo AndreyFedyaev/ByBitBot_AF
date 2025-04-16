@@ -193,7 +193,7 @@ namespace ByBitBot_AF
                         if (lastBuyPrice != null)
                         {
                             //если есть покупки для продажи
-
+                            await Sell();
                         }
                     }
 
@@ -218,7 +218,8 @@ namespace ByBitBot_AF
         {
             bool result = false;
 
-            if (lastPrice > emaFast && emaFast > emaSlow) result = true;
+            //if (lastPrice > emaFast && emaFast > emaSlow) result = true;
+            if (emaFast > emaSlow) result = true;
 
             return result;
         }
@@ -231,7 +232,8 @@ namespace ByBitBot_AF
         {
             bool result = false;
 
-            if (lastBuyPrice < lastPrice && lastPrice < emaFast && emaFast < emaSlow) result = true;
+            //if (lastBuyPrice < lastPrice && lastPrice < emaFast && emaFast < emaSlow) result = true;
+            if (emaFast < emaSlow) result = true;
 
             return result;
         }
@@ -295,7 +297,7 @@ namespace ByBitBot_AF
 
                 if (result.Success)
                 {
-                    string message = $"[{DateTime.Now:T}] | Покупка {coin} на сумму: {usdtBalance} USDT | Цена: {lastPrice}";
+                    string message = $"[{DateTime.Now:T}] | Покупка {coin} на сумму: {bAmount} USDT | Цена: {lastPrice}";
 
                     Console.WriteLine(message);
                     _telegrammBot.TgBotSendMessage(message);
