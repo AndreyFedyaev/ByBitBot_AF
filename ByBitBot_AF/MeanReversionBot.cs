@@ -4,17 +4,37 @@ using Bybit.Net.Enums;
 
 namespace ByBitBot_AF
 {
+    public class Grid
+    {
+        public decimal newHorizont { get; set; }
+        public decimal horizont { get; set; }
+        public decimal downLevel_1 { get; set; }
+        public decimal downLevel_2 { get; set; }
+        public decimal downLevel_3 { get; set; }
+        public decimal downLevel_4 { get; set; }
+        public decimal downLevel_5 { get; set; }
+
+    }
+
+    public class Orders
+    {
+        public decimal orderLevel { get; set; }                 //цена текущего уровня
+        public string orderID { get; set; }                        //если ордер есть, то будет ID, если нет - 0
+        
+    }
+
     public class MeanReversionBot
     {
+
         //параметры из строки запуска контейнера Docker:
-        private string docker_apiKey = Environment.GetEnvironmentVariable("apikey") ?? "";
-        private string docker_apiSecret = Environment.GetEnvironmentVariable("apisecret") ?? "";
-        private string docker_coin = Environment.GetEnvironmentVariable("coin") ?? "";
-        private string docker_currency = Environment.GetEnvironmentVariable("currency") ?? "";
-        private string docker_emaFastLength = Environment.GetEnvironmentVariable("emafastlength") ?? "";
-        private string docker_emaSlowLength = Environment.GetEnvironmentVariable("emaslowlength") ?? "";
-        private string docker_candleInterval = Environment.GetEnvironmentVariable("candleInterval") ?? "";
-        private string docker_cycle = Environment.GetEnvironmentVariable("cycle") ?? "";
+        private string docker_apiKey = Environment.GetEnvironmentVariable("apikey") ?? "IIC9lG1jXO4FrbMgrW";
+        private string docker_apiSecret = Environment.GetEnvironmentVariable("apisecret") ?? "AhebRU0bZee2eoRrJGbCgQdtL6GBzl245bgL";
+        private string docker_coin = Environment.GetEnvironmentVariable("coin") ?? "SOL";
+        private string docker_currency = Environment.GetEnvironmentVariable("currency") ?? "USDT";
+        private string docker_emaFastLength = Environment.GetEnvironmentVariable("emafastlength") ?? "20";
+        private string docker_emaSlowLength = Environment.GetEnvironmentVariable("emaslowlength") ?? "50";
+        private string docker_candleInterval = Environment.GetEnvironmentVariable("candleInterval") ?? "FiveMinutes";
+        private string docker_cycle = Environment.GetEnvironmentVariable("cycle") ?? "10";
 
         //параметры из конфигурации:     
         private string apiKey;                                  //ключ API KEY из ByBIT
@@ -39,6 +59,15 @@ namespace ByBitBot_AF
         private decimal emaFast { get; set; }               //величина экспоненциальной скользящей средней на короткий период    
         private decimal emaSlow { get; set; }               //величина экспоненциальной скользящей средней на длинный период
 
+        //grid стратегия
+        private List<Orders> ordersList = new List<Orders>();
+        Grid gridInfo = new Grid();
+        private decimal gridLevel_newHorizont = 0.01m;     // +1%
+        private decimal gridLevel_1 = 0.01m;    // -1%
+        private decimal gridLevel_2 = 0.02m;    // -2%
+        private decimal gridLevel_3 = 0.03m;    // -3%
+
+        private decimal buyCount = 2;
 
         public MeanReversionBot()
         {
@@ -117,6 +146,94 @@ namespace ByBitBot_AF
             cycle = TimeSpan.FromSeconds(Convert.ToInt32(docker_cycle));
         }
 
+        private void GridBuild(decimal _lastPrice)
+        {
+            if(gridInfo.horizont == 0)
+            {
+                GridUpdate(_lastPrice);
+            }
+
+            if (_lastPrice >= gridInfo.newHorizont)
+            {
+                GridUpdate(_lastPrice);
+            }
+        }
+
+        private async void GridUpdate(decimal _lastPrice)
+        {
+            gridInfo.newHorizont = Math.Round(_lastPrice + (_lastPrice * gridLevel_newHorizont),2);
+            gridInfo.horizont = Math.Round(_lastPrice,2);
+            gridInfo.downLevel_1 = Math.Round(_lastPrice - (_lastPrice * gridLevel_1), 2);
+            gridInfo.downLevel_2 = Math.Round(_lastPrice - (_lastPrice * gridLevel_2), 2);
+            gridInfo.downLevel_3 = Math.Round(_lastPrice - (_lastPrice * gridLevel_3), 2);
+
+
+            Console.WriteLine($"Обновление сетки:");
+            Console.WriteLine($"Следующий уровень обновления UP: {gridInfo.newHorizont}");
+            Console.WriteLine($"Текущая цена: {_lastPrice:F3}");
+            Console.WriteLine($"-{gridLevel_1 * 100:F1}%: {gridInfo.downLevel_1}");
+            Console.WriteLine($"-{gridLevel_2 * 100:F1}%: {gridInfo.downLevel_2}");
+            Console.WriteLine($"-{gridLevel_3 * 100:F1}%: {gridInfo.downLevel_3}");
+
+
+            var countLevel1 = Math.Floor((buyCount / gridInfo.downLevel_1) * 1000) / 1000;             //настроить округление в меньшую сторону
+            var resultLevel1 = await _client.V5Api.Trading.PlaceOrderAsync(
+                Bybit.Net.Enums.Category.Spot,
+                symbol,
+                Bybit.Net.Enums.OrderSide.Buy,
+                Bybit.Net.Enums.NewOrderType.Limit,
+                countLevel1,
+                gridInfo.downLevel_1
+                );
+            if (resultLevel1.Success)
+            {
+                ordersList.Add(new Orders
+                {
+                    orderID = resultLevel1.Data.OrderId,
+                    orderLevel = gridInfo.downLevel_1
+                });
+            }
+
+            var countLevel2 = Math.Floor((buyCount / gridInfo.downLevel_2) * 1000) / 1000;             //настроить округление в меньшую сторону
+            var resultLevel2 = await _client.V5Api.Trading.PlaceOrderAsync(
+                Bybit.Net.Enums.Category.Spot,
+                symbol,
+                Bybit.Net.Enums.OrderSide.Buy,
+                Bybit.Net.Enums.NewOrderType.Limit,
+                countLevel2,
+                gridInfo.downLevel_2
+                );
+            if (resultLevel2.Success)
+            {
+                ordersList.Add(new Orders
+                {
+                    orderID = resultLevel2.Data.OrderId,
+                    orderLevel = gridInfo.downLevel_2
+                });
+            }
+
+            var countLevel3 = Math.Floor((buyCount / gridInfo.downLevel_3) * 1000) / 1000;             //настроить округление в меньшую сторону
+            var resultLevel3 = await _client.V5Api.Trading.PlaceOrderAsync(
+                Bybit.Net.Enums.Category.Spot,
+                symbol,
+                Bybit.Net.Enums.OrderSide.Buy,
+                Bybit.Net.Enums.NewOrderType.Limit,
+                countLevel3,
+                gridInfo.downLevel_3
+                );
+            if (resultLevel3.Success)
+            {
+                ordersList.Add(new Orders
+                {
+                    orderID = resultLevel3.Data.OrderId,
+                    orderLevel = gridInfo.downLevel_3
+                });
+            }
+
+
+
+        }
+
         public async Task StartLoopAsync()
         {
             Console.WriteLine("Mean Reversion Bot запущен.....\n");
@@ -126,24 +243,35 @@ namespace ByBitBot_AF
                 try
                 {
                     await _getWalletData.UpdateWalletData();
-                    _telegrammBot.lastBalanceInfo = $"{coin}:  {_getWalletData.AssetBalance:F5}\n{currency}:  {_getWalletData.TotalAvailableBalance:F3}\nWallet:  {_getWalletData.TotalEquity:F3}";
 
-                    //определяем есть ли активные покупки
-                    var searchBuy = await _client.V5Api.Trading.GetUserTradesAsync(
-                        category: Category.Spot,
-                        symbol: symbol,
-                        limit: 1);
-                    if (searchBuy != null && searchBuy.Success)
-                    {
-                        var trade = searchBuy.Data.List.FirstOrDefault();
-                        if (trade != null && trade.FeeAsset == coin && trade.Side == OrderSide.Buy)
-                        {
-                            lastBuyPrice = trade.Price;
-                        }
-                    }
+                    //_telegrammBot.lastBalanceInfo = $"{coin}:  {_getWalletData.AssetBalance:F5}\n{currency}:  {_getWalletData.TotalAvailableBalance:F3}\nWallet:  {_getWalletData.TotalEquity:F3}";
+
+                    ////определяем есть ли активные покупки
+                    //var searchBuy = await _client.V5Api.Trading.GetUserTradesAsync(
+                    //    category: Category.Spot,
+                    //    symbol: symbol,
+                    //    limit: 1);
+                    //if (searchBuy != null && searchBuy.Success)
+                    //{
+                    //    var trade = searchBuy.Data.List.FirstOrDefault();
+                    //    if (trade != null && trade.FeeAsset == coin && trade.Side == OrderSide.Buy)
+                    //    {
+                    //        lastBuyPrice = trade.Price;
+                    //    }
+                    //}
+
+                    var result = await _client.V5Api.Trading.GetOrdersAsync(
+                        Bybit.Net.Enums.Category.Spot
+                        );
+                    var history = await _client.V5Api.Trading.GetOrderHistoryAsync(
+    category: Category.Spot
+);
 
                     //получение текущей цены SOL/USDT
                     lastPrice = await _getCoinData.GetCurrentPriceAsync(symbol);
+
+                    //расчет сетки
+                    GridBuild(lastPrice);
 
                     //получение текущих значений EMA
                     var (emaFastResult, emaSlowResult) = await _getCoinData.GetEmaValuesAsync(emaFastLength, emaSlowLength);
@@ -181,7 +309,7 @@ namespace ByBitBot_AF
                         {
                             var buyAmount = CalculateBuyAmountUSDT();
 
-                            await Buy(symbol, buyAmount, MarketUnit.QuoteAsset);
+                            //await Buy(symbol, buyAmount, MarketUnit.QuoteAsset);
                         }
                     }
 
@@ -193,7 +321,7 @@ namespace ByBitBot_AF
                         if (lastBuyPrice != null)
                         {
                             //если есть покупки для продажи
-                            await Sell();
+                            //await Sell();
                         }
                     }
 
