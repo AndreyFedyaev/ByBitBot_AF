@@ -15,18 +15,22 @@ namespace ByBitBot_AF
     {
         //параметры из строки запуска контейнера Docker:
         private string docker_telegrammToken = Environment.GetEnvironmentVariable("telegrammtoken") ?? "";
+        private string docker_telegrammChatID = Environment.GetEnvironmentVariable("telegrammchatid") ?? "";
 
         private readonly TelegramBotClient bot;
         private ChatId chatId = 0;
-        public string lastLoggingMessage { get; set; }
+        public string info { get; set; }
+        public string ordersInfo { get; set; }
         public string lastBalanceInfo { get; set; }
-        public List<string> BuySellArchive { get; set; } = new List<string>();
+        public string gridInfo { get; set; }
+       
 
         public TelegrammBot()
         {
             if (docker_telegrammToken.Trim() != "")
             {
                 bot = new TelegramBotClient(docker_telegrammToken);
+                if(docker_telegrammChatID.Trim() != "") chatId = Convert.ToInt32(docker_telegrammChatID);
 
                 Start();
             }
@@ -38,41 +42,31 @@ namespace ByBitBot_AF
 
             Console.WriteLine($"Телеграмм бот {me.Username} успешно запущен запущен!\n");
 
+            var replyKeyboard = new ReplyKeyboardMarkup(new[]
+            {
+                new KeyboardButton[] { "Инфо", "Баланс", "Ордеры", "Сетка" }
+            })
+            {
+                ResizeKeyboard = true // уменьшает размер под экран
+            };
+
+            await bot.SendMessage(
+                chatId: chatId,
+                text: "telegrammBot запущен!",
+                replyMarkup: replyKeyboard
+            );
+
             bot.OnMessage += OnMessage;
         }
         private async Task OnMessage(Message msg, UpdateType type)
         {
             if (msg == null || msg.Text == null) return;
 
-            if (msg.Text.ToUpper() == "GO")
-            {
-                chatId = msg.Chat.Id;
-
-                var replyKeyboard = new ReplyKeyboardMarkup(new[]
-                {
-                    new KeyboardButton[] { "История", "Баланс", "Лог" }
-                })
-                {
-                    ResizeKeyboard = true // уменьшает размер под экран
-                };
-
-                await bot.SendMessage(
-                    chatId: chatId,
-                    text: "chatId успешно считан!",
-                    replyMarkup: replyKeyboard
-                );
-            }
-
-            if (msg.Text == "История")
+            if (msg.Text == "Инфо")
             {
                 if (chatId != 0)
                 {
-                    string archiveresult = "История:";
-                    foreach (var item in BuySellArchive)
-                    {
-                        archiveresult = archiveresult + "\n" + item;
-                    }
-                    await bot.SendMessage(chatId, archiveresult);
+                    await bot.SendMessage(chatId, info);
                 }
             }
             if (msg.Text == "Баланс")
@@ -82,11 +76,18 @@ namespace ByBitBot_AF
                     await bot.SendMessage(chatId, lastBalanceInfo);
                 }
             }
-            if (msg.Text == "Лог")
+            if (msg.Text == "Ордеры")
             {
                 if (chatId != 0)
                 {
-                    await bot.SendMessage(chatId, lastLoggingMessage);
+                    await bot.SendMessage(chatId, ordersInfo);
+                }
+            }
+            if (msg.Text == "Сетка")
+            {
+                if (chatId != 0)
+                {
+                    await bot.SendMessage(chatId, gridInfo);
                 }
             }
         }
