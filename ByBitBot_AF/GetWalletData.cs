@@ -9,6 +9,7 @@ namespace ByBitBot_AF
         public decimal? TotalEquity { get; set; }                   //общий баланс портфеля в USDT с учетом всех купленных активов
         public decimal? TotalAvailableBalance { get; set; }         //доступный баланс портфеля в USDT
         public decimal? AssetBalance { get; set; }                  //баланс текущей монеты (_coin)
+        public decimal? AssetBalanceLocked { get; set; }            //баланс текущей монеты (_coin) заблокированный
         public decimal MinOrderBuyValue { get; set; }               //минимальная цена покупки в USDT
         public decimal MinOrderSellValue { get; set; }              //минимальное количество монет для продажи
         public GetWalletData(BybitRestClient client, string coin)
@@ -40,6 +41,8 @@ namespace ByBitBot_AF
                     if (item.Asset == _coin)
                     {
                         AssetBalance = item.Equity;
+                        AssetBalanceLocked = item.Locked;
+
                     }
                 }
             }

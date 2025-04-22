@@ -38,9 +38,6 @@ namespace ByBitBot_AF
         private string docker_apiSecret = Environment.GetEnvironmentVariable("apisecret") ?? "";
         private string docker_coin = Environment.GetEnvironmentVariable("coin") ?? "";
         private string docker_currency = Environment.GetEnvironmentVariable("currency") ?? "";
-        //private string docker_emaFastLength = Environment.GetEnvironmentVariable("emafastlength") ?? "";
-        //private string docker_emaSlowLength = Environment.GetEnvironmentVariable("emaslowlength") ?? "";
-        //private string docker_candleInterval = Environment.GetEnvironmentVariable("candleInterval") ?? "";
         private string docker_cycle = Environment.GetEnvironmentVariable("cycle") ?? "";
 
         //параметры из конфигурации:     
@@ -49,9 +46,6 @@ namespace ByBitBot_AF
         private string coin;                                    //монета
         private string currency;                                //валюта
         private string symbol;                                  //торговая пара
-        //private int emaFastLength;                              //длина экспоненциальной скользящей средней на короткий период
-        //private int emaSlowLength;                              //длина экспоненциальной скользящей средней на длинный период
-        //private KlineInterval candleInterval;                   //интервал свечей
         private TimeSpan cycle;                                 //таймер работы (цикл работы)
 
         //свойства
@@ -59,27 +53,24 @@ namespace ByBitBot_AF
         private readonly GetWalletData _getWalletData;
         private readonly BybitRestClient _client;
         private readonly TelegrammBot _telegrammBot;
-        private decimal? lastBuyPrice { get; set; } = null;           //цена последней покупки
 
         //свойства монеты
         private decimal lastPrice { get; set; }             //последняя цена
-        //private decimal emaFast { get; set; }               //величина экспоненциальной скользящей средней на короткий период    
-        //private decimal emaSlow { get; set; }               //величина экспоненциальной скользящей средней на длинный период
 
         //grid стратегия
         private List<Orders> ordersList = new List<Orders>();
         Grid gridInfo = new Grid();
-        private decimal gridLevel_newHorizont = 0.005m;     // +0.5%
-        private decimal gridLevel_1 = 0.005m;       // -0.5%
-        private decimal gridLevel_2 = 0.01m;        // -1%
-        private decimal gridLevel_3 = 0.015m;       // -1.5%
-        private decimal gridLevel_4 = 0.02m;        // -2%
-        private decimal gridLevel_5 = 0.025m;       // -2.5%
-        private decimal gridLevel_6 = 0.03m;        // -3%
-        private decimal gridLevel_7 = 0.035m;       // -3.5%
-        private decimal gridLevel_8 = 0.04m;        // -4%
-        private decimal gridLevel_9 = 0.045m;       // -4.5%
-        private decimal gridLevel_10 = 0.05m;       // -5%
+
+        private decimal gridLevel_newHorizont = 0.02m;  // +2%
+        private decimal gridLevel_1 = 0.03m;            // -3%
+        private decimal gridLevel_2 = 0.06m;            // -6%
+        private decimal gridLevel_3 = 0.10m;            // -10%
+        private decimal gridLevel_4 = 0.15m;            // -15%
+        private decimal gridLevel_5 = 0.20m;            // -20%
+        private decimal gridLevel_6 = 0.25m;            // -25%
+        private decimal gridLevel_7 = 0.30m;            // -30%
+        private decimal gridLevel_8 = 0.35m;            // -35%
+        private decimal gridLevel_9 = 0.40m;            // -40%
 
         private decimal buyCount = 2;
 
@@ -107,63 +98,12 @@ namespace ByBitBot_AF
 
             symbol = coin + currency;
 
-            //emaFastLength = Convert.ToInt32(docker_emaFastLength);
-            //emaSlowLength = Convert.ToInt32(docker_emaSlowLength);
-
-            //string _candleInterval = docker_candleInterval;
-            //switch (_candleInterval)
-            //{
-            //    case "OneMinute":
-            //        candleInterval = KlineInterval.OneMinute;
-            //        break;
-            //    case "ThreeMinutes":
-            //        candleInterval = KlineInterval.ThreeMinutes;
-            //        break;
-            //    case "FiveMinutes":
-            //        candleInterval = KlineInterval.FiveMinutes;
-            //        break;
-            //    case "FifteenMinutes":
-            //        candleInterval = KlineInterval.FifteenMinutes;
-            //        break;
-            //    case "ThirtyMinutes":
-            //        candleInterval = KlineInterval.ThirtyMinutes;
-            //        break;
-            //    case "OneHour":
-            //        candleInterval = KlineInterval.OneHour;
-            //        break;
-            //    case "TwoHours":
-            //        candleInterval = KlineInterval.TwoHours;
-            //        break;
-            //    case "FourHours":
-            //        candleInterval = KlineInterval.FourHours;
-            //        break;
-            //    case "SixHours":
-            //        candleInterval = KlineInterval.SixHours;
-            //        break;
-            //    case "TwelveHours":
-            //        candleInterval = KlineInterval.TwelveHours;
-            //        break;
-            //    case "OneDay":
-            //        candleInterval = KlineInterval.OneDay;
-            //        break;
-            //    case "OneWeek":
-            //        candleInterval = KlineInterval.OneWeek;
-            //        break;
-            //    case "OneMonth":
-            //        candleInterval = KlineInterval.OneMonth;
-            //        break;
-            //    default:
-            //        candleInterval = KlineInterval.OneMinute;
-            //        break;
-            //}
-
             cycle = TimeSpan.FromSeconds(Convert.ToInt32(docker_cycle));
         }
 
         private void OrdersLog()
         {
-            string tbMessage = $"Список ордеров:" + "\n";
-
+            string tbMessage = "";
             for (int i = 0; i < ordersList.Count; i++)
             {
                 tbMessage = tbMessage + $"Level {i + 1}:" + "\n";
@@ -171,10 +111,8 @@ namespace ByBitBot_AF
                 tbMessage = tbMessage + $"sellPrice = {ordersList[i].sellPrice}" + "\n";
                 tbMessage = tbMessage + $"buyOrderID = {ordersList[i].buyOrderID}" + "\n";
                 tbMessage = tbMessage + $"sellOrderID = {ordersList[i].sellOrderID}" + "\n";
+                tbMessage = tbMessage + "\n";
             }
-
-            Console.WriteLine(tbMessage);
-            _telegrammBot.TgBotSendMessage(tbMessage);
             _telegrammBot.ordersInfo = tbMessage;
         }
         private async Task SetBuyOrder(decimal orderPrice)
@@ -226,22 +164,30 @@ namespace ByBitBot_AF
                 symbol
             );
 
-            //если ордера есть - удаляем
+            bool createNewGrid = true;
+     
+
+            //если ордера есть - удаляем только ордера на покупку
             if (result != null && result.Success && result.Data.List.Count() > 0)
             {
                 foreach (var item in result.Data.List)
                 {
-                    var id = item.OrderId;
+                    if (item.Side == OrderSide.Buy)
+                    {
+                        createNewGrid = false;
 
-                    var result2 = await _client.V5Api.Trading.CancelOrderAsync(
-                        Bybit.Net.Enums.Category.Spot, 
-                        symbol,
-                        id);
+                        var id = item.OrderId;
+
+                        var result2 = await _client.V5Api.Trading.CancelOrderAsync(
+                            Bybit.Net.Enums.Category.Spot,
+                            symbol,
+                            id);
+                    }
                 }
             }
 
-            //если ордеров нет - строим новую сетку
-            if (result != null && result.Success && result.Data.List.Count() == 0)
+            //если ордеров на покупку нет - строим новую сетку
+            if (createNewGrid)
             {
                 //формируем новую сетку
                 gridInfo.newHorizont = Math.Round(_lastPrice + (_lastPrice * gridLevel_newHorizont), 2);
@@ -255,11 +201,10 @@ namespace ByBitBot_AF
                 gridInfo.downLevel_7 = Math.Round(_lastPrice - (_lastPrice * gridLevel_7), 2);
                 gridInfo.downLevel_8 = Math.Round(_lastPrice - (_lastPrice * gridLevel_8), 2);
                 gridInfo.downLevel_9 = Math.Round(_lastPrice - (_lastPrice * gridLevel_9), 2);
-                gridInfo.downLevel_10 = Math.Round(_lastPrice - (_lastPrice * gridLevel_10), 2);
 
 
-                string gridMessage = $"Обновление сетки:" + "\n";
-                gridMessage = gridMessage + $"Уровень обновления UP: {gridInfo.newHorizont}" + "\n";
+                string gridMessage = $"Сетка:" + "\n";
+                gridMessage = gridMessage + $"Уровень обновления сетки: {gridInfo.newHorizont}" + "\n";
                 gridMessage = gridMessage + $"Горизонт сетки: {gridInfo.horizont}" + "\n";
                 gridMessage = gridMessage + $"-{gridLevel_1 * 100:F1}%: {gridInfo.downLevel_1}" + "\n";
                 gridMessage = gridMessage + $"-{gridLevel_2 * 100:F1}%: {gridInfo.downLevel_2}" + "\n";
@@ -270,15 +215,20 @@ namespace ByBitBot_AF
                 gridMessage = gridMessage + $"-{gridLevel_7 * 100:F1}%: {gridInfo.downLevel_7}" + "\n";
                 gridMessage = gridMessage + $"-{gridLevel_8 * 100:F1}%: {gridInfo.downLevel_8}" + "\n";
                 gridMessage = gridMessage + $"-{gridLevel_9 * 100:F1}%: {gridInfo.downLevel_9}" + "\n";
-                gridMessage = gridMessage + $"-{gridLevel_10 * 100:F1}%: {gridInfo.downLevel_10}" + "\n";
 
 
                 Console.WriteLine(gridMessage);
-                _telegrammBot.TgBotSendMessage(gridMessage);
                 _telegrammBot.gridInfo = gridMessage;
 
                 ordersList = new List<Orders>();
 
+                ordersList.Add(new Orders
+                {
+                    buyPrice = gridInfo.horizont,
+                    sellPrice = gridInfo.newHorizont,
+                    buyOrderID = "",
+                    sellOrderID = ""
+                });
                 ordersList.Add(new Orders
                 {
                     buyPrice = gridInfo.downLevel_1,
@@ -342,13 +292,6 @@ namespace ByBitBot_AF
                     buyOrderID = "",
                     sellOrderID = ""
                 });
-                ordersList.Add(new Orders
-                {
-                    buyPrice = gridInfo.downLevel_10,
-                    sellPrice = gridInfo.downLevel_9,
-                    buyOrderID = "",
-                    sellOrderID = ""
-                });
             }
         }
 
@@ -373,8 +316,13 @@ namespace ByBitBot_AF
                     _telegrammBot.info = $"Текущая цена {symbol}: {lastPrice:F3}";
 
                     //формируем сетку при запуске бота или обновляем сетку при увеличении текуще цены
-                    if (gridInfo.horizont == 0 && lastPrice >= gridInfo.newHorizont)
+                    if (gridInfo.horizont == 0 || lastPrice >= gridInfo.newHorizont)
                     {
+                        //перед генерацией новой сетки продаём все оставшиеся монеты
+                        var sellMaxCount = CalculateSellAmount();
+                        await Sell(sellMaxCount);
+
+                        //обновляем сетку
                         GridUpdate(lastPrice);
                     }
 
@@ -436,68 +384,13 @@ namespace ByBitBot_AF
                         }
                     }
 
-                    foreach(var order in ordersList)
+                    foreach (var order in ordersList)
                     {
                         if (order.buyOrderID.Trim() == "" && order.sellOrderID.Trim() == "")
                         {
                             await SetBuyOrder(order.buyPrice);
                         }
                     }
-
-
-
-
-                    //получение текущих значений EMA
-                    //var (emaFastResult, emaSlowResult) = await _getCoinData.GetEmaValuesAsync(emaFastLength, emaSlowLength);
-                    //emaFast = emaFastResult;
-                    //emaSlow = emaSlowResult;
-
-                    //string w1 = "";
-                    //if (lastPrice > emaFast) w1 = ">"; else w1 = "<";
-                    //string w2 = "";
-                    //if (emaFast > emaSlow) w2 = ">"; else w2 = "<";
-
-                    //if (lastBuyPrice == null)
-                    //{
-                    //    Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание покупки.. | Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | {currency}:{_getWalletData.TotalAvailableBalance:F3}, {coin}:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
-
-                    //    _telegrammBot.lastLoggingMessage = $"[{DateTime.Now:T}]\n{coin}/{currency}: ожидание покупки..\nЦена: {lastPrice:F3}\nEma{emaFastLength}: {emaFast:F3}\nEma{emaSlowLength}: {emaSlow:F3}";
-                    //}
-                    //else
-                    //{
-                    //    decimal priceChange = ((decimal)lastPrice * 100 / (decimal)lastBuyPrice) - 100;
-                    //    string w3 = "";
-                    //    if (lastBuyPrice > lastPrice) w3 = ">"; else w3 = "<";
-
-                    //    Console.WriteLine($"[{DateTime.Now:T}] | {symbol} | Ожидание продажи.. | {priceChange:F2}% | Цена покупки:{lastBuyPrice} {w3} Цена:{lastPrice:F2} {w1} ema{emaFastLength}:{emaFast:F2} {w2} ema{emaSlowLength}:{emaSlow:F2} | USDT:{_getWalletData.TotalAvailableBalance:F3}, SOL:{_getWalletData.AssetBalance:F5}, Wallet:{_getWalletData.TotalEquity:F3}");
-
-                    //    _telegrammBot.lastLoggingMessage = $"[{DateTime.Now:T}]\n{coin}/{currency}: ожидание продажи..\nИзменение цены: {priceChange:F2}%\nЦена покупки: {lastBuyPrice:F3}\nЦена: {lastPrice:F3}\nEma{emaFastLength}: {emaFast:F3}\nEma{emaSlowLength}: {emaSlow:F3}";
-                    //}
-
-
-                    ////проверка условий для покупки
-                    //var buy = AnalyzeBuy();
-                    //if (buy)
-                    //{
-                    //    if (lastBuyPrice == null) //если покупок еще небыло
-                    //    {
-                    //        var buyAmount = CalculateBuyAmountUSDT();
-
-                    //        //await Buy(symbol, buyAmount, MarketUnit.QuoteAsset);
-                    //    }
-                    //}
-
-                    ////проверка условий для продажи
-                    //var sell = AnalyzeSell();
-                    //if (sell)
-                    //{
-                    //    //можно продавать
-                    //    if (lastBuyPrice != null)
-                    //    {
-                    //        //если есть покупки для продажи
-                    //        //await Sell();
-                    //    }
-                    //}
 
 
                     await Task.Delay(cycle);
@@ -511,34 +404,6 @@ namespace ByBitBot_AF
         }
 
 
-
-        /// <summary>
-        /// Анализ условий для покупки
-        /// </summary>
-        /// <returns>true - можно покупать!</returns>
-        //private bool AnalyzeBuy()
-        //{
-        //    bool result = false;
-
-        //    //if (lastPrice > emaFast && emaFast > emaSlow) result = true;
-        //    if (emaFast > emaSlow) result = true;
-
-        //    return result;
-        //}
-
-        /// <summary>
-        /// Анализ условий для продажи
-        /// </summary>
-        /// <returns>true - можно продавать!</returns>
-        //private bool AnalyzeSell()
-        //{
-        //    bool result = false;
-
-        //    //if (lastBuyPrice < lastPrice && lastPrice < emaFast && emaFast < emaSlow) result = true;
-        //    if (emaFast < emaSlow) result = true;
-
-        //    return result;
-        //}
 
         /// <summary>
         /// Определение суммы покупки в USDT
@@ -566,17 +431,28 @@ namespace ByBitBot_AF
         //}
 
         /// <summary>
-        /// Определение суммы продажи
+        /// Определение максимально возможной суммы продажи
         /// </summary>
         /// <returns>величина продажи (decimal)</returns>
-        //private decimal CalculateSellAmount()
-        //{
-        //    decimal result = 0;
+        private decimal CalculateSellAmount()
+        {
+            decimal result = 0;
 
+            // Достаём доступный баланс актива (например, SOL)
+            var assetAvailableBalance = _getWalletData.AssetBalance - _getWalletData.AssetBalanceLocked;
 
+            // Достаём минимально допустимое количество для продажи
+            var minOrderQuantity = _getWalletData.MinOrderSellValue;
 
-        //    return result;
-        //}
+            if (assetAvailableBalance > minOrderQuantity)
+            {
+                //округляем
+                result = Math.Floor((decimal)(assetAvailableBalance * 1000)) / 1000;
+            }
+            
+
+            return result;
+        }
 
         /// <summary>
         /// Покупка
@@ -622,55 +498,36 @@ namespace ByBitBot_AF
         /// <summary>
         /// Продажа 
         /// </summary>
-        //private async Task Sell()
-        //{
-        //    try
-        //    {
-        //        // Достаём баланс актива (например, SOL)
-        //        var assetBalance = _getWalletData.AssetBalance;
+        private async Task Sell(decimal sAmount)
+        {
+            if (sAmount == 0) return;
+            try
+            {
+                // Отправляем маркет-ордер на продажу
+                var result = await _client.V5Api.Trading.PlaceOrderAsync(
+                    Bybit.Net.Enums.Category.Spot,
+                    symbol,
+                    Bybit.Net.Enums.OrderSide.Sell,
+                    Bybit.Net.Enums.NewOrderType.Market,
+                    sAmount
+                );
 
-        //        // Достаём минимально допустимое количество для продажи
-        //        var minOrderQuantity = _getWalletData.MinOrderSellValue;
+                if (result.Success)
+                {
+                    string message = $"[{DateTime.Now:T}] | Продажа {coin}: {sAmount} | Цена: {lastPrice}";
 
-        //        // Оставляем небольшой запас и округляем
-        //        decimal quantityToSell = Math.Round((decimal)assetBalance * 0.98m, 3); // 98%, 0.001 precision
-
-        //        if (quantityToSell < minOrderQuantity)
-        //        {
-        //            Console.WriteLine($"[{DateTime.Now:T}] | Недостаточно {symbol} для продажи: {quantityToSell:F3} (минимум {minOrderQuantity})");
-        //            return;
-        //        }
-
-        //        // Отправляем маркет-ордер на продажу
-        //        var result = await _client.V5Api.Trading.PlaceOrderAsync(
-        //            Bybit.Net.Enums.Category.Spot,
-        //            symbol,
-        //            Bybit.Net.Enums.OrderSide.Sell,
-        //            Bybit.Net.Enums.NewOrderType.Market,
-        //            quantityToSell
-        //        );
-
-        //        if (result.Success)
-        //        {
-        //            string message = $"[{DateTime.Now:T}] | Продажа {coin}: {quantityToSell} | Цена: {lastPrice}";
-
-        //            Console.WriteLine(message);
-        //            _telegrammBot.TgBotSendMessage(message);
-        //            _telegrammBot.BuySellArchive.Add(message);
-
-        //            lastBuyPrice = null;
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine($"Ошибка ордера: {result.Error}");
-        //            _telegrammBot.TgBotSendMessage($"Ошибка ордера: {result.Error}");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine($"[{DateTime.Now:T}] | Exception: {ex.Message}");
-        //    }
-        //}
+                    Console.WriteLine(message);
+                }
+                else
+                {
+                    Console.WriteLine($"Ошибка ордера: {result.Error}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[{DateTime.Now:T}] | Exception: {ex.Message}");
+            }
+        }
 
 
 
